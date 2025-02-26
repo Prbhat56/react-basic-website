@@ -1,48 +1,57 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Home from './components/Home';
-import Signup from './components/Sigup';
-import Login from './components/Login';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import Login from "./components/Login";
+import Signup from "./components/Sigup";
+import Home from "./components/Home";
+
+import "./App.css";
 
 const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    setIsAuthenticated(!!token); // Check if the user is authenticated
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    setIsAuthenticated(false);
-    window.location.href = '/signup'; // Redirect to signup after logout
-  };
+  // const [ setIsAuthenticated] = useState(false); // Add state to track authentication
 
   return (
     <Router>
-      <div className={`app-container ${isAuthenticated ? 'with-sidebar' : ''}`}>
-        {isAuthenticated && (
-          <div className="sidebar">
-            <h2>MyApp</h2>
-            <ul>
-              <li onClick={() => window.location.href = '/home'}>Home</li>
-              <li>Profile</li>
-              <li>Settings</li>
-              <li onClick={handleLogout}>Logout</li>
-            </ul>
+      <div className="app">
+        {/* Navigation Bar */}
+        <nav className="navbar">
+          <div className="navbar-brand">
+            <Link to="/" className="navbar-title">AI Detector</Link>
           </div>
-        )}
-        <div className="main-content">
-          <Routes>
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
-            <Route
-              path="/home"
-              element={isAuthenticated ? <Home /> : <Navigate to="/login" />} // Redirect to login if not authenticated
-            />
-            <Route path="/" element={<Navigate to={isAuthenticated ? "/home" : "/login"} />} />
-          </Routes>
-        </div>
+          <ul className="navbar-menu">
+            <li className="dropdown">
+              <span className="dropdown-title">Products</span>
+              <ul className="dropdown-menu">
+                <li>Image Moderation</li>
+                <li>Video Moderation</li>
+                <li>Text Moderation</li>
+                <li>AI Image Detection</li>
+                <li>Deepfake Detection</li>
+                <li>Video Anonymization</li>
+              </ul>
+            </li>
+            <li className="dropdown">
+              <span className="dropdown-title">Resources</span>
+              <ul className="dropdown-menu">
+                <li>Docs</li>
+                <li>Blog</li>
+                <li>API Reference</li>
+              </ul>
+            </li>
+            <li>
+              <Link to="/login" className="btn btn-secondary">Login</Link>
+            </li>
+            <li>
+              <Link to="/signup" className="btn btn-primary">Sign Up</Link>
+            </li>
+          </ul>
+        </nav>
+
+        {/* Routes */}
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+        </Routes>
       </div>
     </Router>
   );

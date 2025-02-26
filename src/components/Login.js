@@ -1,42 +1,42 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 
-const Login = ({ setIsAuthenticated }) => {
+const Login = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState(""); 
+  const [error, setError] = useState(""); 
 
+ 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
+
   const handleLogin = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post('http://localhost:3000/api/v1/auth/login', formData);
-      setMessage(response.data.message);
-      if (response.data.success) {
-        // Save the token in localStorage
-        localStorage.setItem('token', response.data.token);
-        setIsAuthenticated(true); // Set authentication state to true
-        setTimeout(() => {
-          navigate('/home'); // Redirect to home page
-        }, 2000);
-      }
-    } catch (error) {
-      setMessage('Error logging in. Please try again.');
-    }
+    setMessage(""); 
+    setError(""); 
+    
+   
+    setMessage("Login successful"); 
+    localStorage.setItem("token", "dummy-token"); 
+    
+ 
+    navigate("/");
   };
 
   return (
-    <div className="container d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
-      <div className="card p-4" style={{ width: '100%', maxWidth: '500px' }}>
-        <h2 className="text-center">Login</h2>
+    <div
+      className="container d-flex justify-content-center align-items-center"
+      style={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}
+    >
+      <div className="card p-4 shadow-lg" style={{ width: "100%", maxWidth: "400px" }}>
+        <h2 className="text-center mb-4">Login</h2>
         <form onSubmit={handleLogin}>
           <div className="form-group mb-3">
             <label>Email</label>
@@ -44,7 +44,7 @@ const Login = ({ setIsAuthenticated }) => {
               type="email"
               name="email"
               className="form-control"
-              placeholder="Enter Email"
+              placeholder="Enter your email"
               value={formData.email}
               onChange={handleChange}
               required
@@ -56,15 +56,20 @@ const Login = ({ setIsAuthenticated }) => {
               type="password"
               name="password"
               className="form-control"
-              placeholder="Enter Password"
+              placeholder="Enter your password"
               value={formData.password}
               onChange={handleChange}
               required
             />
           </div>
-          <button type="submit" className="btn btn-primary w-100">Login</button>
+          <button type="submit" className="btn btn-primary w-100">
+            Login
+          </button>
         </form>
-        {message && <p className="text-center mt-3">{message}</p>}
+        
+        {message && <p className="text-success text-center mt-3">{message}</p>}
+        {error && <p className="text-danger text-center mt-3">{error}</p>}
+        
         <p className="text-center mt-3">
           Not Registered? <Link to="/signup">Register here</Link>
         </p>
